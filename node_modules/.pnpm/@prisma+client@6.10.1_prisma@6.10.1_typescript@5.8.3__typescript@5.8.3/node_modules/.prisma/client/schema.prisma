@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pato {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  ataque    Int
+  defesa    Int
+  vida      Int
+  imagem    String
+  createdAt DateTime @default(now())
+}

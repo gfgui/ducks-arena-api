@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+message Pato {
+  int32 id = 1;
+  string nome = 2;
+  int32 ataque = 3;
+  int32 defesa = 4;
+  int32 vida = 5;
+  string imagem = 6;
+}
+
+message PatosResponse {
+  repeated Pato patos = 1;
+}
