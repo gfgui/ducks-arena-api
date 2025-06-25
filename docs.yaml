@@ -1,0 +1,169 @@
+openapi: 3.1.0
+info:
+  title: API de Patos
+  version: 1.0.0
+  description: API para gerenciar patos e batalhas entre eles.
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor Local
+
+paths:
+  /patos:
+    post:
+      summary: Cria um novo pato
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+              properties:
+                nome:
+                  type: string
+      responses:
+        '201':
+          description: Pato criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pato'
+
+    get:
+      summary: Retorna a lista de patos em formato Protobuf
+      responses:
+        '200':
+          description: Lista de patos em formato Protobuf
+          content:
+            application/x-protobuf:
+              schema:
+                type: string
+                format: binary
+
+  /patos/{id}:
+    get:
+      summary: Busca um pato pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pato encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pato'
+        '404':
+          description: Pato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    put:
+      summary: Atualiza o nome de um pato
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nome
+              properties:
+                nome:
+                  type: string
+      responses:
+        '200':
+          description: Pato atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pato'
+        '404':
+          description: Pato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+    delete:
+      summary: Remove um pato pelo ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Pato removido com sucesso
+        '404':
+          description: Pato não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+
+  /patos/batalha:
+    post:
+      summary: Realiza uma batalha entre dois patos
+      responses:
+        '200':
+          description: Resultado da batalha
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mensagem:
+                    type: string
+                  atacante:
+                    $ref: '#/components/schemas/Pato'
+                  defensor:
+                    $ref: '#/components/schemas/Pato'
+        '400':
+          description: Número insuficiente de patos para batalhar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Pato:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        ataque:
+          type: integer
+        defesa:
+          type: integer
+        vida:
+          type: integer
+        imagem:
+          type: string
+          format: uri
+
+    Erro:
+      type: object
+      properties:
+        error:
+          type: string

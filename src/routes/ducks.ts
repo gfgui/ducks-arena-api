@@ -24,21 +24,29 @@ export async function patoRoutes(fastify: FastifyInstance) {
     return reply.code(201).send(pato)
   })
 
+  // get patos - proto.buf
+
   const root = await protobuf.load(path.resolve(__dirname, '../proto/pato.proto'))
+
+  // Busca o tipo "PatosResponse" definido no arquivo .proto
   const PatosResponse = root.lookupType('PatosResponse')
 
   fastify.get('/patos', async (request, reply) => {
-
     const patos = await prisma.pato.findMany()
 
+    // Cria uma mensagem Protobuf com os dados obtidos, validando o formato conforme o tipo "PatosResponse"
     const message = PatosResponse.create({ patos })
 
+    // Codifica a mensagem Protobuf em formato binário (Buffer)
     const buffer = PatosResponse.encode(message).finish()
 
+    // Define o cabeçalho indicando que a resposta é um Protobuf e envia os dados serializados
     reply
       .header('Content-Type', 'application/x-protobuf')
       .send(buffer)
   })
+
+  //
 
   fastify.get('/patos/:id', async (request, reply) => {
     const { id } = request.params as { id: string }

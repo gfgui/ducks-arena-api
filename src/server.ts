@@ -2,7 +2,6 @@ import Fastify from 'fastify'
 import { patoRoutes } from './routes/ducks'
 import 'dotenv/config'
 import cors from '@fastify/cors'
-import protobuf from 'protobufjs'
 
 const app = Fastify({ logger: true })
 
